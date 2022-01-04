@@ -1,0 +1,10 @@
+
+<launch>
+    <group ns="robot1">
+    <node pkg="robot" name="waypoint.py" type="waypoint.py" respawn="true" output="screen"/>
+    </group>
+
+    <group ns="robot2">
+    <node pkg="robot" name="waypoint.py" type="waypoint.py" respawn="true" output="screen"/>
+    </group>
+</launch>
