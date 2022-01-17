@@ -1,0 +1,48 @@
+    <launch>
+        <arg name="robot_name"/>
+        <arg name="init_pose"/>
+        <node name="spawn_minibot_model" pkg="gazebo" type="spawn_model"
+              args="$(arg init_pose) -urdf -param /robot_description -model $(arg robot_name)"
+              respawn="false" output="screen" />
+        <node pkg="robot_state_publisher" type="state_publisher"
+              name="robot_state_publisher" output="screen"/>
+        <!-- The odometry estimator, throttling, fake laser etc. go here -->
+        <!-- All the stuff as from usual robot launch file -->
+    </launch>
+    <launch>
+    <!-- No namespace here as we will share this description.
+         Access with slash at the beginning -->
+    <!--param name="robot_description"
+           command="$(find xacro)/xacro.py $(find turtlebot_description)/urdf/turtlebot.urdf.xacro" /-->
+
+    <!-- BEGIN ROBOT 1-->
+
+    <group ns="robot1">
+        <param name="tf_prefix" value="robot1_tf" />
+        <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
+        <include file="$(find turtlebot3_gazebo)/launch/one_robot.launch" >
+            <arg name="init_pose" value="-x 1 -y 1 -z 0" />
+            <arg name="robot_name"  value="Robot1" />
+        </include>
+    </group>
+
+    <!-- BEGIN ROBOT 2-->
+    <group ns="robot2">
+        <param name="tf_prefix" value="robot2_tf" />
+        <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
+        <include file="$(find turtlebot3_gazebo)/launch/one_robot.launch" >
+            <arg name="init_pose" value="-x -1 -y 1 -z 0" />
+            <arg name="robot_name"  value="Robot2" />
+        </include>
+    </group>
+</launch>
+<launch>
+    <param name="/use_sim_time" value="true" />
+    <!-- start world -->
+    <node name="gazebo" pkg="gazebo" type="gazebo"
+          args="$(find turtlebot3_gazebo)/worlds/turtlebot3_world.world" respawn="false" output="screen" />
+    <!-- start gui -->
+    <node name="gazebo_gui" pkg="gazebo" type="gui" respawn="false" output="screen"/>
+    <!-- include our robots -->
+    <include file="$(find turtlebot3_gazebo)/launch/robots.launch"/>
+</launch>
