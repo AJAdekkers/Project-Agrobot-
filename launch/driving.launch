@@ -1,0 +1,9 @@
+<launch>
+    <group ns="robot1">
+    <node pkg="navigatie_test" name="driving_obstacle1" type="driving_obstacle1.py" respawn="true" output="screen"/>
+    </group>
+
+    <group ns="robot2">
+    <node pkg="navigatie_test" name="driving_obstacle2" type="driving_obstacle2.py" respawn="true" output="screen"/>
+    </group>
+</launch>
