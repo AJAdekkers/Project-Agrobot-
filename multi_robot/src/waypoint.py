@@ -8,7 +8,7 @@ from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 from math import pi, sqrt, atan2
 
-WAYPOINTS = [[0.5,0],[1,0],[1,0],[1,0.5],[1,1],[1,1],[0.5,1],[0,1],[0,1],[0,0.5],[0,0]]
+WAYPOINTS = [[0,0],[5,0],[5,1],[0,1],[0,2],[5,2],[5,2]]
 
 class PID:
     #P&ID controller
