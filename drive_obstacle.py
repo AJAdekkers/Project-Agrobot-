@@ -19,8 +19,8 @@ def run_command(linear_x, angular_z, t, rate):
 
     while(time.time()- init_time < t ):
 
-        range_1 = rospy.wait_for_message('/robot1/scan', LaserScan).ranges[0]  # We subscribe to the laser's topic
-        range_2 = rospy.wait_for_message('/robot2/scan', LaserScan).ranges[0]  # We subscribe to the laser's topic
+        range_1 = rospy.wait_for_message('/robot1/scan', LaserScan).ranges[0]  # subscribe to the laser's topic
+        range_2 = rospy.wait_for_message('/robot2/scan', LaserScan).ranges[0]  # subscribe to the laser's topic
 
         print("Robot 1 = ")
         print(range_1)
