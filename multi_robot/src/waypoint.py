@@ -11,9 +11,7 @@ from math import pi, sqrt, atan2
 WAYPOINTS = [[0.5,0],[1,0],[1,0],[1,0.5],[1,1],[1,1],[0.5,1],[0,1],[0,1],[0,0.5],[0,0]]
 
 class PID:
-    """
-    Discrete PID control
-    """
+    #P&ID controller
     def __init__(self, P=0.0, I=0.0, D=0.0, Derivator=0, Integrator=0, Integrator_max=10, Integrator_min=-10):
         self.Kp = P
         self.Ki = I
@@ -25,7 +23,7 @@ class PID:
         self.set_point = 0.0
         self.error = 0.0
 
-    def update(self, current_value):
+    def update(self, current_value):            # Calculate P&ID controller
         self.error = self.set_point - current_value
         if self.error > pi:  # specific design for circular situation
             self.error = self.error - 2*pi
@@ -93,12 +91,12 @@ class turtlebot_move():
         direction_vector = direction_vector/sqrt(diff_x*diff_x + diff_y*diff_y)  # normalization
         theta = atan2(diff_y, diff_x)
 
-        # We should adopt different parameters for different kinds of movement
+        
         self.pid_theta.setPID(1, 0, 0)     # P control while steering
         self.pid_theta.setPoint(theta)
         rospy.logwarn("### PID: set target theta = " + str(theta) + " ###")
 
-        # Adjust orientation first
+        # orientation adjustment when robot is shut down
         while not rospy.is_shutdown():
             angular = self.pid_theta.update(self.theta)
             if abs(angular) > 0.2:
@@ -110,13 +108,13 @@ class turtlebot_move():
             self.vel_pub.publish(self.vel)
             self.rate.sleep()
 
-        # Have a rest
+        # rest 
         self.stop()
         self.pid_theta.setPoint(theta)
         #self.pid_theta.setPID(1, 0, 0)   # PI control while moving
         self.pid_theta.setPID(1, 0.02, 0.2)  # PID control while moving
 
-        # Move to the target point
+        # This make the robot move to the calculated point
         while not rospy.is_shutdown():
             diff_x = x - self.x
             diff_y = y - self.y
@@ -147,7 +145,7 @@ class turtlebot_move():
 
 
     def odom_callback(self, msg):
-        # Get (x, y, theta) specification from odometry topic
+        # Get (x, y, theta) specification from odometry topic of ROS topics
         quarternion = [msg.pose.pose.orientation.x,msg.pose.pose.orientation.y,\
                     msg.pose.pose.orientation.z, msg.pose.pose.orientation.w]
         (roll, pitch, yaw) = tf.transformations.euler_from_quaternion(quarternion)
@@ -155,7 +153,7 @@ class turtlebot_move():
         self.x = msg.pose.pose.position.x
         self.y = msg.pose.pose.position.y
 
-        # Make messages saved and prompted in 5Hz rather than 100Hz
+        
         self.counter += 1
         if self.counter == 20:
             self.counter = 0
